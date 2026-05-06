@@ -13,18 +13,18 @@ if HERE not in sys.path:
     sys.path.insert(0, HERE)
 
 from utils.theme import (
-    inject_theme, app_bar, hero, kpi, section_card, step_mini,
+    inject_theme, side_nav, app_bar, hero, kpi, section_card, step_mini,
     thin_divider,
 )
 
 # -----------------------------------------------------------------------------
-# Page config -- must be the FIRST Streamlit call
+# Page config
 # -----------------------------------------------------------------------------
 st.set_page_config(
     page_title="Flange Detection · UH",
     page_icon="🔧",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
     menu_items={
         'Get Help'    : None,
         'Report a bug': None,
@@ -35,6 +35,7 @@ st.set_page_config(
     },
 )
 inject_theme()
+side_nav(active="home")
 
 # -----------------------------------------------------------------------------
 # Top app bar
@@ -48,7 +49,7 @@ hero_l, hero_r = st.columns([5, 1.4], gap="medium")
 
 with hero_l:
     hero(
-        eyebrow="Spring 2026  •  University of Houston  •  ML Final Project",
+        eyebrow="Spring 2026  •  University of Houston",
         title_html=(
             "Classifying <span class='accent'>Pipeline Flange "
             "Torque</span><br>from a Single Hammer Strike"
@@ -63,6 +64,11 @@ with hero_l:
             "Cullen College of Engineering &nbsp;·&nbsp; "
             "University of Houston"
         ),
+        chips=[
+            ("Production-ready pipeline", "live"),
+            ("9 ML models · 1 ensemble", None),
+            ("Validated on 4 unseen flanges", None),
+        ],
     )
 
 with hero_r:
@@ -84,23 +90,27 @@ with hero_r:
         )
 
 # -----------------------------------------------------------------------------
-# Headline KPIs with icons + status indicators
+# KPIs
 # -----------------------------------------------------------------------------
 m1, m2, m3, m4 = st.columns(4, gap="small")
 with m1:
     kpi(value="3", label="Torque classes<br>0 / 25 / 50 ft-lb",
-        icon="⚙", trend="3-way classifier")
+        icon="⚙", trend="3-way", trend_kind="info",
+        sparkline=[0.3, 0.5, 0.7, 0.6, 0.8, 0.9, 1.0, 1.0])
 with m2:
     kpi(value="9", label="ML / DL models<br>compared head-to-head",
-        icon="◆", trend="Ensemble")
+        icon="◆", trend="Ensemble", trend_kind="info",
+        sparkline=[0.4, 0.5, 0.6, 0.7, 0.7, 0.8, 0.9, 1.0])
 with m3:
     kpi(value="88", unit="%",
         label="3-class accuracy<br>on an unseen flange",
-        icon="◎", trend="LOFO")
+        icon="◎", trend="LOFO", trend_kind="success",
+        sparkline=[0.5, 0.6, 0.65, 0.72, 0.78, 0.82, 0.86, 0.88])
 with m4:
     kpi(value="99.6", unit="%",
         label="Binary loose-vs-tight<br>field-relevant",
-        icon="✓", trend="+11.5pp")
+        icon="✓", trend="+11.5pp", trend_kind="success",
+        sparkline=[0.6, 0.7, 0.8, 0.85, 0.92, 0.96, 0.98, 1.0])
 
 thin_divider()
 
@@ -158,7 +168,7 @@ with right:
 thin_divider()
 
 # -----------------------------------------------------------------------------
-# Three sections (cards)
+# Three sections
 # -----------------------------------------------------------------------------
 st.markdown("<h2>Get started</h2>", unsafe_allow_html=True)
 st.markdown(
@@ -182,7 +192,7 @@ with c1:
             "<p>Inspect every confusion matrix, every per-flange accuracy, "
             "then download the trained models as a single bundle.</p>"
         ),
-        tags=[("Heavy · CPU-bound", "warn"), ("Reproducible", "info")],
+        tags=[("Heavy · CPU-bound", "warn"), ("End-to-end", "info")],
     )
     if st.button("Open Section 1  →", key="go1",
                  use_container_width=True):
@@ -228,7 +238,7 @@ with c3:
 thin_divider()
 
 # -----------------------------------------------------------------------------
-# Pipeline at a glance -- 8 mini-cards in a 2-col grid
+# Pipeline at a glance
 # -----------------------------------------------------------------------------
 st.markdown("<h2>How it works</h2>", unsafe_allow_html=True)
 st.markdown(
@@ -269,7 +279,6 @@ pipeline_steps = [
      "independent accuracy."),
 ]
 
-# 2-column grid
 for i in range(0, len(pipeline_steps), 2):
     col_a, col_b = st.columns(2, gap="medium")
     cols = [col_a, col_b]

@@ -287,7 +287,7 @@ def _train_classical(X_tr, y_tr, X_ts, y_ts, results, models):
                  'criterion': ['gini', 'entropy'],
                  'min_samples_split': [2, 5, 10]}),
         'LR' : (LogisticRegression(max_iter=2000, solver='lbfgs',
-                                    multi_class='multinomial', random_state=SEED),
+                                    random_state=SEED),
                 {'C': [0.01, 0.1, 1, 10, 100]}),
         'SVM': (SVC(probability=True, random_state=SEED),
                 [{'kernel': ['linear'], 'C': [0.1, 1, 10, 100]},
@@ -313,8 +313,7 @@ def _train_classical(X_tr, y_tr, X_ts, y_ts, results, models):
         with warnings.catch_warnings():
             warnings.simplefilter('ignore')
             gxgb = GridSearchCV(
-                XGBClassifier(use_label_encoder=False,
-                              eval_metric='mlogloss',
+                XGBClassifier(eval_metric='mlogloss',
                               random_state=SEED, n_jobs=-1),
                 {'n_estimators': [200, 400], 'max_depth': [4, 6],
                  'learning_rate': [0.05, 0.1], 'subsample': [0.8, 1.0]},
